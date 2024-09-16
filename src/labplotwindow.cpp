@@ -11,7 +11,8 @@
 #include <QImage>
 #include <QPainter>
 #include <QApplication>
-#include "version.h"
+#include <QDebug>
+
 
 LabPlotWindow::LabPlotWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,7 +21,7 @@ LabPlotWindow::LabPlotWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QString s;
-    s.sprintf("LabPlot V%d.%d", Version::MAJOR, Version::MINOR);
+    s.sprintf("LabPlot V%d.%d", Version_MAJOR, Version_MINOR);
     this->setWindowTitle(s);
 
     //Knöpfe verbinden
@@ -264,8 +265,8 @@ void LabPlotWindow::menu_triggered(QAction *action)
     {
         QMessageBox msgBox;
         QString s;
-        s.sprintf("LabPlot V%d.%d\n(c) 2016 Prof. Dr. Edeler\n\nBuild date: %s\nGitid: %s",
-                  Version::MAJOR, Version::MINOR, Version::DATESTR, Version::GITID);
+        s.sprintf("LabPlot V%d.%d\n(c) 2024 Prof. Dr. Edeler\n\nBuild date: %s\nGitid: %s",
+                  Version_MAJOR, Version_MINOR, Version_DATESTR, Version_GITID);
         msgBox.setText(s);
         msgBox.exec();
     }
