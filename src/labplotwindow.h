@@ -36,6 +36,8 @@ public slots:
     void copy_clipboard();
     void connect_device();
 
+    void loadExperiment(Experiment *newExperiment);
+
 private slots:
     void plot_new_data();
     void device_state_changed();

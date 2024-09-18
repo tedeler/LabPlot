@@ -37,8 +37,6 @@ HEADERS += \
 
 FORMS    += $$PWD\src\labplotwindow.ui
 
-release:QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$QWT_DLL_RELEASE) $$quote($$OUT_PWD/release/)$$escape_expand(\n\t)
-debug:QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$QWT_DLL_DEBUG) $$quote($$OUT_PWD/debug/)$$escape_expand(\n\t)
 
 
 RESOURCES += \

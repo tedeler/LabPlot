@@ -20,8 +20,6 @@ LabPlotWindow::LabPlotWindow(QWidget *parent) :
     ui(new Ui::LabPlotWindow), m_curves(2), m_curve_data(2)
 {
     ui->setupUi(this);
-    m_currentExperiment = new ExpDiodeKennlinie();
-    m_currentExperiment->initDatenanzeige(ui->gbDatenanzeige);
 
     QString s;
     s.sprintf("LabPlot V%d.%d", Version_MAJOR, Version_MINOR);
@@ -48,13 +46,6 @@ LabPlotWindow::LabPlotWindow(QWidget *parent) :
     grid->setPen(Qt::green);
     grid->attach(&m_plot);
 
-    //Achsen beschriften und Bereich einstellen
-    QRectF vp = m_currentExperiment->initialViewPort;
-    m_plot.setAxisScale(m_plot.xBottom, vp.left(), vp.right());
-    m_plot.setAxisScale(m_plot.yLeft, vp.bottom(), vp.top());
-    m_plot.setAxisTitle(m_plot.yLeft, m_currentExperiment->ylabel);
-    m_plot.setAxisTitle(m_plot.xBottom, m_currentExperiment->xlabel);
-
     //Kurve hinzufügen
     m_curves[0] = new QwtPlotCurve();
     m_curves[0]->setPen(Qt::yellow, 2);
@@ -66,17 +57,8 @@ LabPlotWindow::LabPlotWindow(QWidget *parent) :
     m_curves[1]->setStyle(QwtPlotCurve::Dots);
     m_curves[1]->attach(&m_plot);
 
-    //Aktiviere Zoom und Pan
-/*    m_zoomer = new QwtPlotZoomer(QwtPlot::xBottom, QwtPlot::yLeft, m_plot.canvas());
-    m_zoomer->setRubberBand( QwtPicker::RectRubberBand );
-    m_zoomer->setRubberBandPen( QColor( Qt::blue ) );
-    m_zoomer->setTrackerMode( QwtPicker::ActiveOnly );
-    m_zoomer->setTrackerPen( QColor( Qt::white ) );
-*/
     m_panner = new QwtPlotPanner(m_plot.canvas());
-//    m_panner->setMouseButton(Qt::MidButton);
     m_magnifier = new QwtPlotMagnifier(m_plot.canvas());
-//    m_magnifier->setWheelFactor(-0.9);
 
     //Füge Marker hinzu
     QwtSymbol *sym=new QwtSymbol(QwtSymbol::Cross,QBrush(Qt::red),QPen(Qt::yellow),QSize(20,20));
@@ -95,6 +77,10 @@ LabPlotWindow::LabPlotWindow(QWidget *parent) :
     ui->statusBar->addWidget(L);
     L = new QLabel("Mausrad: Zoom");
     ui->statusBar->addWidget(L);
+
+    m_currentExperiment = new Experiment();
+    loadExperiment(new ExpDiodeKennlinie());
+
 }
 
 void LabPlotWindow::closeEvent(QCloseEvent *event)
@@ -120,7 +106,29 @@ LabPlotWindow::~LabPlotWindow()
 
 void LabPlotWindow::connect_device()
 {
-   m_device.dev_connect();
+    m_device.dev_connect();
+}
+
+void LabPlotWindow::loadExperiment(Experiment *newExperiment)
+{
+    if(m_currentExperiment != 0)
+    {
+        m_currentExperiment->deinitDatenanzeige(ui->gbDatenanzeige);
+        delete m_currentExperiment;
+        m_currentExperiment = 0;
+    }
+
+    delrecords();
+
+    m_currentExperiment = newExperiment;
+    m_currentExperiment->initDatenanzeige(ui->gbDatenanzeige, ui->ExperimentImage);
+
+    //Achsen beschriften und Bereich einstellen
+    QRectF vp = m_currentExperiment->initialViewPort;
+    m_plot.setAxisScale(m_plot.xBottom, vp.left(), vp.right());
+    m_plot.setAxisScale(m_plot.yLeft, vp.bottom(), vp.top());
+    m_plot.setAxisTitle(m_plot.yLeft, m_currentExperiment->ylabel);
+    m_plot.setAxisTitle(m_plot.xBottom, m_currentExperiment->xlabel);
 }
 
 void LabPlotWindow::device_state_changed()
@@ -190,9 +198,6 @@ void LabPlotWindow::copy_clipboard()
 
 void LabPlotWindow::plot_new_data()
 {
-
-}
-/*{
     QString DisplayString;
     static qint64 nextDisplayTime = 0;
 
@@ -200,54 +205,24 @@ void LabPlotWindow::plot_new_data()
     while(this->m_device.dataAvailable())
     {
         data_t data = m_device.getData();
-        float Ur3_mV = data.channel0 * 1e3;
-        float Id_mA = Ur3_mV / 1e3;
-        float Ud_mV = data.channel1 * 1e3;
-        static float sum_ur3=0, sum_id=0, sum_ud=0;
-        static int sumcounter=0;
+        QPointF plotXY = m_currentExperiment->dataToPlotXY(data);
 
-//        qDebug() << "[RCV] Time: " << data.time << " Ud_mV: " << Ud_mV << " Id_mA: " << Id_mA;
-
-        if (data.overflow)
+        if (!data.overflow)
         {
-            ui->ln_id->setText("Overflow");
-            ui->ln_ud->setText("Overflow");
-            ui->ln_ur3->setText("Overflow");
-            nextDisplayTime = 0;
-        }
-        else
-        {
-            m_marker.setValue(Ud_mV, Id_mA);
-            QPointF datapoint(Ud_mV, Id_mA);
+            m_marker.setValue(plotXY.x(), plotXY.y());
             if (ui->cb_record->isChecked())
             {
-                m_curve_data[0].append(datapoint);
+                m_curve_data[0].append(plotXY);
             }
-            sum_ur3 += Ur3_mV;
-            sum_ud += Ud_mV;
-            sum_id += Id_mA;
-            sumcounter += 1;
-            if (QDateTime::currentMSecsSinceEpoch() > nextDisplayTime)
-            {
-                qDebug() << sumcounter;
-                QString s;
-                s.sprintf("%.2fmA", sum_id/sumcounter);
-                ui->ln_id->setText(s);
-                s.sprintf("%.2fmV", sum_ud/sumcounter);
-                ui->ln_ud->setText(s);
-                s.sprintf("%.2fmV", sum_ur3/sumcounter);
-                ui->ln_ur3->setText(s);
-
-                nextDisplayTime = QDateTime::currentMSecsSinceEpoch() + 250;
-                sum_ur3 = 0;
-                sum_ud = 0;
-                sum_id = 0;
-                sumcounter = 0;
-            }
+        }
+        if (QDateTime::currentMSecsSinceEpoch() > nextDisplayTime)
+        {
+            m_currentExperiment->displayData(data);
+            nextDisplayTime = QDateTime::currentMSecsSinceEpoch() + 250;
         }
     }
     QString s;
-    s.sprintf("Anzahl Datenpunkte: %d", m_curve_data[0].size());
+    s.asprintf("Anzahl Datenpunkte: %d", m_curve_data[0].size());
     ui->lb_datainfo->setText(s);
     m_curves[0]->setSamples(m_curve_data[0]);
 
@@ -256,7 +231,7 @@ void LabPlotWindow::plot_new_data()
 
     ui->lb_datadisplay->setText(DisplayString);
 }
-*/
+
 void LabPlotWindow::menu_triggered(QAction *action)
 {
     //About box
@@ -276,5 +251,8 @@ void LabPlotWindow::menu_triggered(QAction *action)
                   Version_MAJOR, Version_MINOR, Version_DATESTR, Version_GITID);
         msgBox.setText(s);
         msgBox.exec();
+    }
+    if(action->objectName() == "action_Versuch_Diodenkennlinie") {
+        loadExperiment( new ExpDiodeKennlinie() );
     }
 }
