@@ -35,7 +35,6 @@ HEADERS += \
 	$$PWD\src\labjack.h\
 	$$PWD\src\labplotwindow.h\
 	$$PWD\src\mainwindow.h\
-	$$PWD\src\LJUD_DynamicLinking.h\
 	$$PWD\src\expdiodekennlinie.h\
 	$$PWD\src\experiment.h
 
