@@ -1,1 +1,5 @@
 /build-Labplot-*
+/src/.qtc_clangd/.cache/clangd/index/*.idx
+/src/.qtc_clangd
+/src/debug
+/src/release

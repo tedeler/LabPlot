@@ -19,6 +19,8 @@ CONFIG += c++17
 
 SOURCES += \
 	basedevice.cpp\
+	expdiodekennlinie.cpp \
+	experiment.cpp \
 	labjack.cpp\
 	labplotwindow.cpp\
 	main.cpp\
@@ -26,6 +28,8 @@ SOURCES += \
 
 HEADERS += \
 	basedevice.h\
+	expdiodekennlinie.h \
+	experiment.h \
 	labjack.h\
 	labplotwindow.h\
 	mainwindow.h\
@@ -33,8 +37,7 @@ HEADERS += \
 
 FORMS    += labplotwindow.ui
 
-release:QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$QWT_DLL_RELEASE) $$quote($$OUT_PWD/release/) ;
-debug:QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$QWT_DLL_DEBUG) $$quote($$OUT_PWD/debug/) ;
+#release:QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$QWT_DLL_RELEASE) $$quote($$OUT_PWD/release/) ;
 
 
 RESOURCES += \

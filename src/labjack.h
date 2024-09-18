@@ -4,7 +4,6 @@
 #include "basedevice.h"
 
 #include <windows.h>
-#define _stdcall
 #include <LabJackUD.h>
 
 

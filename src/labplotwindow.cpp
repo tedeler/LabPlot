@@ -12,6 +12,7 @@
 #include <QPainter>
 #include <QApplication>
 #include <QDebug>
+#include "expdiodekennlinie.h"
 
 
 LabPlotWindow::LabPlotWindow(QWidget *parent) :
@@ -19,6 +20,8 @@ LabPlotWindow::LabPlotWindow(QWidget *parent) :
     ui(new Ui::LabPlotWindow), m_curves(2), m_curve_data(2)
 {
     ui->setupUi(this);
+    m_currentExperiment = new ExpDiodeKennlinie();
+    m_currentExperiment->initDatenanzeige(ui->gbDatenanzeige);
 
     QString s;
     s.sprintf("LabPlot V%d.%d", Version_MAJOR, Version_MINOR);
@@ -46,10 +49,11 @@ LabPlotWindow::LabPlotWindow(QWidget *parent) :
     grid->attach(&m_plot);
 
     //Achsen beschriften und Bereich einstellen
-    m_plot.setAxisScale(m_plot.xBottom, 0, 800);
-    m_plot.setAxisScale(m_plot.yLeft, 0, 10);
-    m_plot.setAxisTitle(m_plot.yLeft, "Id [mA]");
-    m_plot.setAxisTitle(m_plot.xBottom, "Ud [mV]");
+    QRectF vp = m_currentExperiment->initialViewPort;
+    m_plot.setAxisScale(m_plot.xBottom, vp.left(), vp.right());
+    m_plot.setAxisScale(m_plot.yLeft, vp.bottom(), vp.top());
+    m_plot.setAxisTitle(m_plot.yLeft, m_currentExperiment->ylabel);
+    m_plot.setAxisTitle(m_plot.xBottom, m_currentExperiment->xlabel);
 
     //Kurve hinzufügen
     m_curves[0] = new QwtPlotCurve();
@@ -153,7 +157,7 @@ void LabPlotWindow::device_state_changed()
 
 void LabPlotWindow::delrecords()
 {
-    for(int i; i<m_curves.size(); i++)
+    for(int i=0; i<m_curves.size(); i++)
     {
         m_curve_data[i].clear();
         m_curves[i]->setSamples(m_curve_data[i]);
@@ -186,6 +190,9 @@ void LabPlotWindow::copy_clipboard()
 
 void LabPlotWindow::plot_new_data()
 {
+
+}
+/*{
     QString DisplayString;
     static qint64 nextDisplayTime = 0;
 
@@ -249,7 +256,7 @@ void LabPlotWindow::plot_new_data()
 
     ui->lb_datadisplay->setText(DisplayString);
 }
-
+*/
 void LabPlotWindow::menu_triggered(QAction *action)
 {
     //About box

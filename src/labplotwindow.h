@@ -14,6 +14,7 @@
 #include <qwt_plot_canvas.h>
 
 #include "labjack.h"
+#include "experiment.h"
 
 namespace Ui {
 class LabPlotWindow;
@@ -51,6 +52,7 @@ private:
     QwtPlotMarker m_marker;
 
     Labjack m_device;
+    Experiment *m_currentExperiment;
 
 
 };
