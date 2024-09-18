@@ -155,7 +155,7 @@ Labjack::Labjack(QObject *parent)
     {
         QMessageBox msgBox;
         QString s;
-        s.sprintf("Datei labjackud.dll wurde nicht gefunden. Programm wird beendet!");
+        s = s.asprintf("Datei labjackud.dll wurde nicht gefunden. Programm wird beendet!");
         msgBox.setText(s);
         msgBox.exec();
         exit(1);

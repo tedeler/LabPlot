@@ -13,6 +13,7 @@
 #include <QApplication>
 #include <QDebug>
 #include "expdiodekennlinie.h"
+#include "exptransistorausgangskennlinie.h"
 
 
 LabPlotWindow::LabPlotWindow(QWidget *parent) :
@@ -22,7 +23,7 @@ LabPlotWindow::LabPlotWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QString s;
-    s.sprintf("LabPlot V%d.%d", Version_MAJOR, Version_MINOR);
+    s=s.asprintf("LabPlot V%d.%d", Version_MAJOR, Version_MINOR);
     this->setWindowTitle(s);
 
     //Knöpfe verbinden
@@ -78,14 +79,14 @@ LabPlotWindow::LabPlotWindow(QWidget *parent) :
     L = new QLabel("Mausrad: Zoom");
     ui->statusBar->addWidget(L);
 
-    m_currentExperiment = new Experiment();
-    loadExperiment(new ExpDiodeKennlinie());
+    m_currentExperiment = new Experiment(ui->gbDatenanzeige, ui->ExperimentImage);
+//    loadExperiment(new ExpDiodeKennlinie(ui->gbDatenanzeige, ui->ExperimentImage));
 
 }
 
 void LabPlotWindow::closeEvent(QCloseEvent *event)
 {
-    qDebug() << "Enter close event";
+    qDebug() << "Enter close event" << event;
     if(m_device.is_connected())
             m_device.dev_disconnect();
     qDebug() << "Leave close event";
@@ -113,7 +114,7 @@ void LabPlotWindow::loadExperiment(Experiment *newExperiment)
 {
     if(m_currentExperiment != 0)
     {
-        m_currentExperiment->deinitDatenanzeige(ui->gbDatenanzeige);
+        m_currentExperiment->deinitDatenanzeige();
         delete m_currentExperiment;
         m_currentExperiment = 0;
     }
@@ -121,7 +122,7 @@ void LabPlotWindow::loadExperiment(Experiment *newExperiment)
     delrecords();
 
     m_currentExperiment = newExperiment;
-    m_currentExperiment->initDatenanzeige(ui->gbDatenanzeige, ui->ExperimentImage);
+    m_currentExperiment->initDatenanzeige();
 
     //Achsen beschriften und Bereich einstellen
     QRectF vp = m_currentExperiment->initialViewPort;
@@ -217,7 +218,7 @@ void LabPlotWindow::plot_new_data()
         }
         if (QDateTime::currentMSecsSinceEpoch() > nextDisplayTime)
         {
-            m_currentExperiment->displayData(data);
+            m_currentExperiment->displayAllValues(data.overflow);
             nextDisplayTime = QDateTime::currentMSecsSinceEpoch() + 250;
         }
     }
@@ -247,12 +248,17 @@ void LabPlotWindow::menu_triggered(QAction *action)
     {
         QMessageBox msgBox;
         QString s;
-        s.sprintf("LabPlot V%d.%d\n(c) 2024 Prof. Dr. Edeler\n\nBuild date: %s\nGitid: %s",
+        s=s.asprintf("LabPlot V%d.%d\n(c) 2024 Prof. Dr. Edeler\n\nBuild date: %s\nGitid: %s",
                   Version_MAJOR, Version_MINOR, Version_DATESTR, Version_GITID);
         msgBox.setText(s);
         msgBox.exec();
     }
     if(action->objectName() == "action_Versuch_Diodenkennlinie") {
-        loadExperiment( new ExpDiodeKennlinie() );
+        loadExperiment( new ExpDiodeKennlinie(ui->gbDatenanzeige, ui->ExperimentImage) );
     }
+
+    if(action->objectName() == "action2_BJT_Ausgangskennlinie") {
+        loadExperiment( new ExpTransistorAusgangskennlinie(ui->gbDatenanzeige, ui->ExperimentImage) );
+    }
+
 }

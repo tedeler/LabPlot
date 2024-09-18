@@ -6,11 +6,8 @@
 class ExpDiodeKennlinie : public Experiment
 {
 public:
-    explicit ExpDiodeKennlinie(QObject *parent = nullptr);
-    virtual void initDatenanzeige(QGroupBox *parent, QLabel *ExperimentImage);
-    virtual void deinitDatenanzeige(QGroupBox *parent);
+    explicit ExpDiodeKennlinie(QWidget *parentDatenanzeige, QLabel *experimentImage, QObject *parent = nullptr);
     virtual QPointF dataToPlotXY(data_t data);
-    virtual void displayData(data_t data);
 };
 
 #endif // EXPDIODEKENNLINIE_H

@@ -239,6 +239,7 @@
      <string>Versuche</string>
     </property>
     <addaction name="action_Versuch_Diodenkennlinie"/>
+    <addaction name="action2_BJT_Ausgangskennlinie"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuBearbeiten"/>
@@ -280,13 +281,18 @@
   </action>
   <action name="action_Versuch_Diodenkennlinie">
    <property name="checkable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="checked">
     <bool>false</bool>
    </property>
    <property name="text">
     <string>1: Diodenkennlinie</string>
+   </property>
+  </action>
+  <action name="action2_BJT_Ausgangskennlinie">
+   <property name="text">
+    <string>2: BJT Ausgangskennlinie</string>
    </property>
   </action>
  </widget>

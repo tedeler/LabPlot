@@ -14,6 +14,8 @@
 #include <qwt_plot_canvas.h>
 
 #include "labjack.h"
+#include "testdevice.h"
+
 #include "experiment.h"
 
 namespace Ui {
@@ -53,7 +55,7 @@ private:
     QwtPlotMagnifier *m_magnifier;
     QwtPlotMarker m_marker;
 
-    Labjack m_device;
+    TestDevice m_device;
     Experiment *m_currentExperiment;
 
 

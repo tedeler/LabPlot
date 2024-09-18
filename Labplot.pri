@@ -18,6 +18,8 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+	$$PWD/src/exptransistorausgangskennlinie.cpp \
+	$$PWD/src/testdevice.cpp \
 	$$PWD\src\basedevice.cpp\
 	$$PWD\src\labjack.cpp\
 	$$PWD\src\labplotwindow.cpp\
@@ -27,6 +29,8 @@ SOURCES += \
 	$$PWD\src\experiment.cpp
 
 HEADERS += \
+	$$PWD/src/exptransistorausgangskennlinie.h \
+	$$PWD/src/testdevice.h \
 	$$PWD\src\basedevice.h\
 	$$PWD\src\labjack.h\
 	$$PWD\src\labplotwindow.h\

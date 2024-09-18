@@ -1,15 +1,62 @@
 #include "experiment.h"
+#include <QLabel>
+#include <QDebug>
 
-Experiment::Experiment(QObject *parent)
+Experiment::Experiment(QWidget *parentDatenanzeige, QLabel *experimentImage, QObject *parent)
     : QObject{parent}
-{}
-
-void Experiment::initDatenanzeige(QGroupBox *parent, QLabel *ExperimentImage)
 {
+    this->parentDatenanzeige=parentDatenanzeige; this->experimentImage=experimentImage;
 }
 
-void Experiment::deinitDatenanzeige(QGroupBox *parent)
+
+void Experiment::addLabelAndValueDisplay(QString labletext, QString name, QString format)
 {
+    ValueInformation info = {
+        0.0,            //lastValue
+        0.0,            // valueSums
+        0,              // valueCounts
+        labletext,     // displayName
+        format,         // displayFormat
+        0     // widget
+    };
+    this->valueinfo[name] = info;
+}
+
+void Experiment::initDatenanzeige()
+{
+    QGridLayout *layout = (QGridLayout *) this->parentDatenanzeige->layout();
+
+    for (auto it = valueinfo.begin(); it != valueinfo.end(); ++it) {
+        int fromRow = layout->rowCount();
+
+        QLabel *label = new QLabel(this->parentDatenanzeige);
+        label->setText(it->displayName);
+        layout->addWidget(label, fromRow, 0, 1, 1);
+
+        QLineEdit *lineedit = getValueDisplayWidget();
+        lineedit->setText(it.key());
+
+        layout->addWidget(lineedit, fromRow, 1, 1, 1);
+        it->widget = lineedit;
+    }
+
+
+    experimentImage->setPixmap(QPixmap(experimentImageRessourceName));
+    experimentImage->setScaledContents(true);
+
+}
+
+void Experiment::deinitDatenanzeige()
+{
+    QLayout *gridlayout = parentDatenanzeige->layout();
+
+    QLayoutItem *item;
+    while ((item = gridlayout->takeAt(0)) != nullptr) {
+        if (QWidget *widget = item->widget()) {
+            widget->deleteLater();
+        }
+        delete item;
+    }
 }
 
 QPalette Experiment::getValueDisplayPalette()
@@ -52,8 +99,10 @@ QPalette Experiment::getValueDisplayPalette()
     return palette;
 }
 
-QLineEdit *Experiment::getValueDisplayWidget(QWidget *parent)
+QLineEdit *Experiment::getValueDisplayWidget()
 {
+    QWidget *parent=this->parentDatenanzeige;
+
     QLineEdit *ln_ur3;
     ln_ur3 = new QLineEdit(parent);
     ln_ur3->setEnabled(true);
@@ -69,18 +118,38 @@ QLineEdit *Experiment::getValueDisplayWidget(QWidget *parent)
     ln_ur3->setReadOnly(true);
     return ln_ur3;
 }
-#include <QLabel>
-void Experiment::addLabelAndValueDisplay(QWidget *parent, QGridLayout *layout, QString labletext, QString name,  int fromRow, int rowSpan)
+
+
+void Experiment::addValue(QString name, double value)
 {
-    QLabel *label = new QLabel(parent);
-    label->setText(labletext);
-    layout->addWidget(label, fromRow, 0, rowSpan, 1);
+    valueinfo[name].lastValue = value;
+    valueinfo[name].valueSums += value;
+    valueinfo[name].valueCounts += 1;
+}
 
-    QLineEdit *lineedit = getValueDisplayWidget(parent);
-    layout->addWidget(lineedit, fromRow, 1, rowSpan, 1);
-    lineedit->setText(name);
+void Experiment::displayValue(QString name, bool print_overflow)
+{
+    if(valueinfo[name].widget == 0)
+        return;
 
-    valueFields[name] = lineedit;
+    if(print_overflow || valueinfo[name].valueCounts==0)
+        valueinfo[name].widget->setText("OVERFLOW");
+    else {
+        double v = valueinfo[name].valueSums/valueinfo[name].valueCounts;
+        QString s;
+        s = s.asprintf(valueinfo[name].displayFormat.toStdString().c_str(), v);
+        valueinfo[name].widget->setText(s);
+    }
+
+    valueinfo[name].valueSums = 0;
+    valueinfo[name].valueCounts = 0;
+}
+
+void Experiment::displayAllValues(bool print_overflow)
+{
+    for (auto it = valueinfo.begin(); it != valueinfo.end(); ++it) {
+        displayValue(it.key(), print_overflow);
+    }
 }
 
 QPointF Experiment::dataToPlotXY(data_t data)
@@ -88,7 +157,3 @@ QPointF Experiment::dataToPlotXY(data_t data)
     return QPointF(0,0);
 }
 
-void Experiment::displayData(data_t data)
-{
-
-}

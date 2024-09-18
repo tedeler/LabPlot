@@ -14,24 +14,38 @@ class Experiment : public QObject
 {
     Q_OBJECT
 public:
-    explicit Experiment(QObject *parent = nullptr);
-    virtual void initDatenanzeige(QGroupBox *parent, QLabel *ExperimentImage);
-    virtual void deinitDatenanzeige(QGroupBox *parent);
+    explicit Experiment(QWidget *parentDatenanzeige, QLabel *experimentImage, QObject *parent = nullptr);
+    virtual void initDatenanzeige();
+    virtual void deinitDatenanzeige();
 
     QPalette getValueDisplayPalette();
-    virtual QLineEdit *getValueDisplayWidget(QWidget *);
-    void addLabelAndValueDisplay(QWidget *parent, QGridLayout *layout, QString labletext, QString name,  int fromRow, int rowSpan);
+    virtual QLineEdit *getValueDisplayWidget();
+    void addLabelAndValueDisplay(QString labletext, QString name, QString format);
+
+    void addValue(QString name, double value);
+    void displayValue(QString name, bool print_overflow);
+    void displayAllValues(bool print_overflow=false);
 
     virtual QPointF dataToPlotXY(data_t data);
-    virtual void displayData(data_t data);
 
     QString xlabel, ylabel;
     QRectF initialViewPort;
 
 protected:
-    QMap<QString, QLineEdit *> valueFields;
-    QMap<QString, double> valueSums;
-    QMap<QString, int> valueCounter;
+    struct ValueInformation {
+        double lastValue;
+        double valueSums;
+        int valueCounts;
+        QString displayName;
+        QString displayFormat;
+        QLineEdit *widget;
+    };
+
+    QMap<QString, ValueInformation> valueinfo;
+
+    QWidget *parentDatenanzeige;
+    QLabel *experimentImage;
+    QString experimentImageRessourceName;
 
 signals:
 };
