@@ -3,3 +3,4 @@
 /src/.qtc_clangd
 /src/debug
 /src/release
+/build
