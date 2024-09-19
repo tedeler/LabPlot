@@ -39,13 +39,13 @@ LabPlotWindow::LabPlotWindow(QWidget *parent) :
 
     //Plot Hintergrundfarbe setzen
     QPalette MyPal;
-    MyPal.setColor(QPalette::All, QPalette::Window, Qt::darkGreen);
+    MyPal.setColor(QPalette::All, QPalette::Window, Qt::darkGray);
     m_plot.canvas()->setPalette(MyPal);
 
     //Plot Gitter erstellen und Farbe setzen
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    grid->setPen(Qt::green);
-    grid->attach(&m_plot);
+    plot_grid = new QwtPlotGrid();
+    plot_grid->setPen(Qt::gray);
+    plot_grid->attach(&m_plot);
 
     //Kurve hinzufügen
     m_curves[0] = new QwtPlotCurve();
@@ -130,6 +130,13 @@ void LabPlotWindow::loadExperiment(Experiment *newExperiment)
     m_plot.setAxisScale(m_plot.yLeft, vp.bottom(), vp.top());
     m_plot.setAxisTitle(m_plot.yLeft, m_currentExperiment->ylabel);
     m_plot.setAxisTitle(m_plot.xBottom, m_currentExperiment->xlabel);
+
+    QPalette MyPal;
+    MyPal.setColor(QPalette::All, QPalette::Window, Qt::darkGreen);
+    m_plot.canvas()->setPalette(MyPal);
+    plot_grid->setPen(Qt::green);
+
+
 }
 
 void LabPlotWindow::device_state_changed()

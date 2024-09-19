@@ -24,7 +24,7 @@ void TestDevice::tick()
     data_t d;
     d.time = t_ms;
     d.channel0 = sin( t_ms/1000 * 2*3.14*1 );
-    d.channel1 = cos( t_ms/1000 * 2*3.14*.3 );
+    d.channel1 = cos( t_ms/1000 * 2*3.14*0.9 );
     d.overflow = false;
     data.enqueue(d);
 
