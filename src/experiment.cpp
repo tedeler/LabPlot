@@ -11,6 +11,9 @@ Experiment::Experiment(QWidget *parentDatenanzeige, QLabel *experimentImage, QOb
 
 void Experiment::addLabelAndValueDisplay(QString labletext, QString name, QString format)
 {
+    if(name == "")
+        name = labletext;
+
     ValueInformation info = {
         0.0,            //lastValue
         0.0,            // valueSums
@@ -34,7 +37,7 @@ void Experiment::initDatenanzeige()
         layout->addWidget(label, fromRow, 0, 1, 1);
 
         QLineEdit *lineedit = getValueDisplayWidget();
-        lineedit->setText(it.key());
+        lineedit->setText("-");
 
         layout->addWidget(lineedit, fromRow, 1, 1, 1);
         it->widget = lineedit;
