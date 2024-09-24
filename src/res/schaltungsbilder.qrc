@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>Dioden_Messschaltung.png</file>
-        <file>BJT_AK_Messschaltung.png</file>
+        <file>fromlatex/01_Diode.png</file>
+        <file>fromlatex/02_AKTransistor.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="app.png">icon.png</file>

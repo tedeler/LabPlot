@@ -1,0 +1,37 @@
+\documentclass{standalone}
+\usepackage[european]{circuitikz}
+
+\begin{document}
+	\begin{circuitikz} 
+		\draw
+		% Transistor Q1
+		(0,0) node[npn, anchor=E] (Q1) {}
+		(Q1.B) to[R, l_=${R_B=1k\Omega}$] ++(-2, 0)
+		to[V, l_=$U_1$] ++(0,-2)
+		node[rground]{} coordinate (gndL)
+		(Q1.E) -- (Q1.E |- gndL)
+		node[rground]{} coordinate (gndC)
+		(Q1.C) to[R, l=${R_C=22\Omega}$] ++(0, 2) coordinate(Rctop)
+		to[short] ++(5, 0) coordinate (a)
+		to[sV, v=$0V-10V$, l_=$U_2$] (a |- gndL)
+		node[rground]{} coordinate (gndC)
+		;
+		
+		\draw[draw=red, line width=1pt] 
+		(Q1.C) to[short, *-] ++(2, 0) coordinate (K1a)
+		to[voltmeter, color=red] (K1a|-gndL) coordinate (K1b)
+		node[above, color=red, xshift=.4cm, rotate=-90] at ($ (K1a)!0.5!(K1b) $) {Kanal 1}
+		(K1b) node[rground]{}
+		;
+		
+		\draw[draw=blue, line width=1pt] 
+		(Q1.C) ++(0, .2) coordinate(x)
+		to[short, *-] ++(2, 0) coordinate (K2a)
+		to[voltmeter, color=blue, -*] (K2a|-Rctop) coordinate (K2b)
+		node[above, color=blue, xshift=.4cm, rotate=-90] at ($ (K2a)!0.5!(K2b) $) {Kanal 2}
+		;
+		
+	\end{circuitikz}
+	
+	
+\end{document}

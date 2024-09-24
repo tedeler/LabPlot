@@ -8,11 +8,11 @@ ExpTransistorAusgangskennlinie::ExpTransistorAusgangskennlinie(QWidget *parentDa
     initialViewPort.setBottomLeft( QPointF(-2, -2) );
     initialViewPort.setTopRight(QPointF(2, 2));
 
-    addLabelAndValueDisplay("Uce (0: B-GND)", "Uce", "%.1fV");
-    addLabelAndValueDisplay("Urc (1: A-B)", "Urc", "%.1fmV");
+    addLabelAndValueDisplay("Uce (Kanal 1)", "Uce", "%.1fV");
+    addLabelAndValueDisplay("Urc (Kanal 2)", "Urc", "%.1fmV");
     addLabelAndValueDisplay("Ic = Urc/Rc", "Ic", "%.1fmA");
 
-    experimentImageRessourceName = ":/BJT_AK_Messschaltung.png";
+    experimentImageRessourceName = ":/fromlatex/02_AKTransistor.png";
 }
 
 QPointF ExpTransistorAusgangskennlinie::dataToPlotXY(data_t data)

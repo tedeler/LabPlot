@@ -18,11 +18,11 @@ ExpDiodeKennlinie::ExpDiodeKennlinie(QWidget *parentDatenanzeige, QLabel *experi
     initialViewPort.setBottomLeft( QPointF(0, 0) );
     initialViewPort.setTopRight(QPointF(800, 10));
 
-    addLabelAndValueDisplay("UD", "UD", "%.1fmV");
-    addLabelAndValueDisplay("UR2", "UR2", "%.1fmV");
-    addLabelAndValueDisplay("ID", "ID", "%.1fmA");
+    addLabelAndValueDisplay("UD (Kanal 2)", "UD", "%.1fmV");
+    addLabelAndValueDisplay("UR2 (Kanal 1)", "UR2", "%.1fmV");
+    addLabelAndValueDisplay("ID = UR2/R2", "ID", "%.1fmA");
 
-    experimentImageRessourceName = ":/Dioden_Messschaltung.png";
+    experimentImageRessourceName = ":/fromlatex/01_Diode";
 }
 
 
