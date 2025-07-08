@@ -141,7 +141,7 @@ void LabPlotWindow::loadExperiment(Experiment *newExperiment)
 
 void LabPlotWindow::device_state_changed()
 {
-    Labjack::EDeviceState state = m_device.get_device_state();
+    BaseDevice::EDeviceState state = m_device.get_device_state();
     QString info = m_device.get_device_state_info_str();
 
     qDebug() << "STATE is now " << state << info;
@@ -150,15 +150,15 @@ void LabPlotWindow::device_state_changed()
 
     switch(state)
     {
-        case Labjack::EDS_CONNECTED:
+        case BaseDevice::EDS_CONNECTED:
             ui->pb_connect->setEnabled(false);
             state_str = "Verbunden";
             break;
-        case Labjack::EDS_DISCONNECTED:
+        case BaseDevice::EDS_DISCONNECTED:
             ui->pb_connect->setEnabled(true);
             state_str = "Nicht verbunden";
             break;
-        case Labjack::EDS_ERROR:
+        case BaseDevice::EDS_ERROR:
             ui->pb_connect->setEnabled(true);
             state_str = "Fehler: "+info;
             break;
@@ -255,7 +255,7 @@ void LabPlotWindow::menu_triggered(QAction *action)
     {
         QMessageBox msgBox;
         QString s;
-        s=s.asprintf("LabPlot V%d.%d\n(c) 2024 Prof. Dr. Edeler\n\nBuild date: %s\nGitid: %s",
+        s=s.asprintf("LabPlot V%d.%d\n(c) 2025 Prof. Dr. Edeler\n\nBuild date: %s\nGitid: %s",
                   Version_MAJOR, Version_MINOR, Version_DATESTR, Version_GITID);
         msgBox.setText(s);
         msgBox.exec();

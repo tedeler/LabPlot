@@ -13,7 +13,6 @@
 #include <qwt_plot.h>
 #include <qwt_plot_canvas.h>
 
-#include "labjack.h"
 #include "qwt_plot_grid.h"
 #include "testdevice.h"
 
@@ -57,8 +56,8 @@ private:
     QwtPlotMarker m_marker;
     QwtPlotGrid *plot_grid;
 
-    Labjack m_device;
-    //TestDevice m_device;
+    //Labjack m_device;
+    TestDevice m_device;
     Experiment *m_currentExperiment;
 
 
