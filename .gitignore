@@ -4,3 +4,9 @@
 /src/debug
 /src/release
 /build
+CMakeCache.txt
+CMakeFiles/*
+CMakeLists.txt.user
+Labplot_autogen/*
+Makefile
+cmake_install.cmake
