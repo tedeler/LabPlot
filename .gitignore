@@ -1,5 +1,6 @@
 /build-Labplot-*
-/src/.qtc_clangd/.cache/clangd/index/*.idx
+/src/.qtc_clangd/*
+/.qtc_clangd/*
 /src/.qtc_clangd
 /src/debug
 /src/release
@@ -10,3 +11,10 @@ CMakeLists.txt.user
 Labplot_autogen/*
 Makefile
 cmake_install.cmake
+/.cmake/*
+/.qtc/package-manager
+/Testing/Temporary/*
+/*.ninja*
+/*.exe
+CMakeCache.txt.prev
+qtcsettings.cmake
