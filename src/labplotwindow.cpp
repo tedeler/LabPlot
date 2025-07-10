@@ -144,7 +144,7 @@ void LabPlotWindow::device_state_changed()
     BaseDevice::EDeviceState state = m_device.get_device_state();
     QString info = m_device.get_device_state_info_str();
 
-    qDebug() << "STATE is now " << state << info;
+    qDebug() << "STATE is now " << BaseDevice::EDeviceStateToString(state) << info;
 
     QString state_str;
 

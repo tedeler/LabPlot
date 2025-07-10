@@ -8,6 +8,9 @@ set(CMAKE_AUTOUIC ON)
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
 
 find_library(QWT_LIBRARY NAMES qwt-qt5 qwt REQUIRED)
+find_library(LABJACK_LIBRARY NAMES labjackusb REQUIRED)
+
+
 find_path(QWT_INCLUDE_DIR NAMES qwt.h PATHS "C:/Qwt-6.3.0-dev/include" PATH_SUFFIXES qwt REQUIRED)
 
 
@@ -67,15 +70,14 @@ add_executable(Labplot
     src/u6.c
     src/u6.h
     src/labjack.cpp src/labjack.h
-    src/labjackusb_dummy.c src/labjackusb.h
 )
 
 target_include_directories(Labplot PRIVATE src)
 
 target_link_libraries(Labplot PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets)
 
-target_include_directories(Labplot PRIVATE ${QWT_INCLUDE_DIR} "C:/Users/torsten/Documents/Projekte/exodriver/liblabjackusb")
-target_link_libraries(Labplot PRIVATE ${QWT_LIBRARY})
+target_include_directories(Labplot PRIVATE ${QWT_INCLUDE_DIR})
+target_link_libraries(Labplot PRIVATE ${QWT_LIBRARY} ${LABJACK_LIBRARY})
 
 target_compile_definitions(Labplot PRIVATE
     Version_MAJOR=${Version_MAJOR}

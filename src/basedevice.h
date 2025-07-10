@@ -19,6 +19,16 @@ class BaseDevice : public QObject
     Q_OBJECT
 public:
     enum EDeviceState {EDS_DISCONNECTED, EDS_CONNECTED, EDS_ERROR, EDS_UNKNOWN};
+    static QString EDeviceStateToString(EDeviceState state) {
+        switch (state) {
+        case EDS_DISCONNECTED: return "Disconnected";
+        case EDS_CONNECTED:    return "Connected";
+        case EDS_ERROR:        return "Error";
+        case EDS_UNKNOWN:      return "Unknown";
+        default:               return "Invalid";
+        }
+    }
+
 
     explicit BaseDevice(QObject *parent = 0);
     void dev_connect();
