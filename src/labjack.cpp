@@ -673,7 +673,7 @@ void Labjack::generate_data()
 
         data_t d;
         d.time = t_ms;
-        d.channel0 = voltages[0][0] - voltages[0][1];
+        d.channel0 = voltages[0][1] - voltages[0][0];
         d.channel1 = voltages[0][2] - voltages[0][3];
         d.overflow = false;
         data.enqueue(d);
